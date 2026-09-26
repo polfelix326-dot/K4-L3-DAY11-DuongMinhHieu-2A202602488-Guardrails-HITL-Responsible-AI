@@ -17,12 +17,20 @@ from __future__ import annotations
 import argparse
 import asyncio
 import sys
+import time
 from pathlib import Path
 
 # Cho phép chạy ``python src/main.py`` từ gốc repo
 _SRC_DIR = Path(__file__).resolve().parent
 if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
+
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 from core.config import setup_api_key
 
@@ -92,14 +100,23 @@ async def part4_attacks():
     from attacks.attacks import run_attacks, save_attack_results
 
     red_default, red_default_runner = create_red_agent_default()
-    await test_agent(red_default, red_default_runner)
+
+    # Quick smoke test — skip if quota already exhausted
+    try:
+        await test_agent(red_default, red_default_runner)
+    except Exception as e:
+        print(f"[WARN] test_agent skipped (quota/error): {type(e).__name__}")
 
     print("\n--- Attacks on Red ---")
+    # Small breathing room before hitting the API for attacks
+    await asyncio.sleep(5)
     unsafe_results = await run_attacks(
         red_default, red_default_runner, target_name="red_default"
     )
 
     print("\n--- Attacks on Red Advance (bonus B2 tối đa +10 nếu LEAKED; chọn 1) ---")
+    # Pause between Red and Red Advance phases
+    await asyncio.sleep(8)
     red_advance, red_advance_runner = create_red_agent_advance()
     guards_results = await run_attacks(
         red_advance, red_advance_runner, target_name="red_advance"
