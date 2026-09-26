@@ -2,7 +2,7 @@
 
 > File này **tự sinh** bởi `scripts/grade.py`. **Không** viết / sửa tay.
 
-- Generated (UTC): `2026-09-26T08:55:14.564605+00:00`
+- Generated (UTC): `2026-09-26T10:01:27.236659+00:00`
 - Framework: `google-adk`
 - Technical failure: **False**
 
@@ -40,7 +40,7 @@
 
 ```text
 ..........                                                               [100%]
-10 passed in 1.83s
+10 passed in 2.06s
 ```
 
 ## Notes
